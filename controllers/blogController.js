@@ -51,8 +51,23 @@ async function createBlog(req, res) {
   }
 }
 
+async function updateBlog(req, res) {
+  try {
+    const blog = await prisma.blog.update({
+      where: {
+        id: +req.params.blogId,
+      },
+      data: {
+        title: req.body.title,
+      },
+    });
+    res.json(blog);
+  } catch (err) {}
+}
+
 module.exports = {
   readAllBlogs,
   readBlogById,
   createBlog,
+  updateBlog,
 };

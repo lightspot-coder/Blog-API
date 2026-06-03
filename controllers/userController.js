@@ -1,6 +1,18 @@
 const prisma = require("../lib/prisma.js");
 const bcrypt = require("bcryptjs");
 
+async function readUser(req, res) {
+  try {
+    const user = prisma.user.findFirst({
+      where: {
+        id: req.params.userId,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function createUser(req, res) {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -17,5 +29,6 @@ async function createUser(req, res) {
 }
 
 module.exports = {
+  readUser,
   createUser,
 };
