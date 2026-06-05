@@ -28,7 +28,18 @@ async function createUser(req, res) {
   }
 }
 
+// Middleware function to check if the user is log in
+
+async function checkUserLogIn(req, res, next) {
+  if (!req.user) {
+    res.sendStatus(403);
+  } else {
+    next();
+  }
+}
+
 module.exports = {
   readUser,
   createUser,
+  checkUserLogIn,
 };
