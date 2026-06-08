@@ -31,6 +31,8 @@ function checkTypeReqParams(req, res, next) {
 
 indexRouter.post("/login", async (req, res) => {
   try {
+    console.log("user try to login");
+    console.log(req.body);
     const user = await prisma.user.findFirst({
       where: {
         name: req.body.name,

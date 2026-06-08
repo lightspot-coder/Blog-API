@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 async function readAllBlogs(req, res) {
   try {
+    console.log("someone trying to see all blogs");
     const blogs = await prisma.blog.findMany({
       select: {
         title: true,

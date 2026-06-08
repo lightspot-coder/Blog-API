@@ -2,6 +2,7 @@ const prisma = require("../lib/prisma");
 
 async function readPosts(req, res) {
   try {
+    console.log("someone trying to see all posts");
     const posts = await prisma.post.findMany({
       where: {
         blogId: +req.params.blogId,
@@ -14,6 +15,7 @@ async function readPosts(req, res) {
 }
 async function readPost(req, res) {
   try {
+    console.log("someone is trying to read a single post");
     const post = await prisma.post.findFirst({
       where: {
         id: +req.params.postId,

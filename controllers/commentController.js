@@ -2,6 +2,7 @@ const prisma = require("../lib/prisma");
 
 async function readAllComments(req, res) {
   try {
+    console.log("someone is trying to read all the comments");
     const comments = await prisma.comment.findMany({
       where: {
         postId: +req.params.postId,
