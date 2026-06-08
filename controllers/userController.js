@@ -15,14 +15,29 @@ async function readUser(req, res) {
 
 async function createUser(req, res) {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = await prisma.user.create({
-      data: {
+    // check if the user exist
+    console.log("someone is trying to create a new user");
+    const userExist = await prisma.user.findFirst({
+      where: {
         name: req.body.name,
-        password: hashedPassword,
       },
     });
-    res.json(user);
+    if (userExist) {
+      res.json({
+        message: "user already exist",
+      });
+    } else {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const user = await prisma.user.create({
+        data: {
+          name: req.body.name,
+          password: hashedPassword,
+        },
+      });
+      res.json({
+        message: "user created successfully",
+      });
+    }
   } catch (err) {
     console.log(err);
   }

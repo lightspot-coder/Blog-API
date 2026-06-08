@@ -59,6 +59,7 @@ indexRouter.post("/login", async (req, res) => {
           { expiresIn: "1 day" },
           (err, token) => {
             res.json({
+              user: user.name,
               token,
             });
           },
