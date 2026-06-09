@@ -67,7 +67,10 @@ async function createPost(req, res) {
           message: "something goes wrong creating the post",
         });
       } else {
-        res.json(post);
+        res.json({
+          message: "post created",
+          post,
+        });
       }
     }
   } catch (err) {

@@ -37,6 +37,13 @@ indexRouter.post("/login", async (req, res) => {
       where: {
         name: req.body.name,
       },
+      include: {
+        blog: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
     if (!user) {
       res.status(404).json({
@@ -59,7 +66,9 @@ indexRouter.post("/login", async (req, res) => {
           { expiresIn: "1 day" },
           (err, token) => {
             res.json({
-              user: user.name,
+              name: user.name,
+              id: user.id,
+              blogId: !user.blog ? null : user.blog.id,
               token,
             });
           },

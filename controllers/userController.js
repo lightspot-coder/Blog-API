@@ -3,11 +3,30 @@ const bcrypt = require("bcryptjs");
 
 async function readUser(req, res) {
   try {
-    const user = prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: {
-        id: req.params.userId,
+        id: +req.params.userId,
+      },
+      include: {
+        blog: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
+    if (!user) {
+      res.json({
+        message: "user not found",
+      });
+    } else {
+      console.log(user);
+      res.json({
+        name: user.name,
+        id: user.id,
+        blogId: !user.blog ? null : user.blog.id,
+      });
+    }
   } catch (err) {
     console.log(err);
   }

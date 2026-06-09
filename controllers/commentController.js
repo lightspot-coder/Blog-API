@@ -18,17 +18,12 @@ async function readAllComments(req, res) {
         },
       },
     });
-    if (comments.length == 0) {
-      res.json({
-        message: "There are not comments",
-      });
-    } else {
-      res.json(comments);
-    }
+    res.json(comments);
   } catch (err) {
     console.log(err);
   }
 }
+
 async function readComment(req, res) {
   try {
     const comment = await prisma.comment.findFirst({
@@ -122,34 +117,34 @@ async function deleteComment(req, res) {
       message: "This blog doesn't exist",
     });
   } else {
-    if (blog.userId != user.id) {
+    /*if (blog.userId != user.id) {
       res.json({
         message:
           "You can not delete the comment because you are not the creator of the blog",
       });
+    } else {*/
+    // Check if the comment exist
+    const commentExist = await prisma.comment.findFirst({
+      where: {
+        id: +req.params.commentId,
+      },
+    });
+    if (!commentExist) {
+      res.json({
+        message: "Comment was not found,",
+      });
     } else {
-      // Check if the comment exist
-      const commentExist = await prisma.comment.findFirst({
+      const comment = await prisma.comment.delete({
         where: {
           id: +req.params.commentId,
         },
       });
-      if (!commentExist) {
-        res.json({
-          message: "Comment was not found,",
-        });
-      } else {
-        const comment = await prisma.comment.delete({
-          where: {
-            id: +req.params.commentId,
-          },
-        });
-        res.json({
-          message: "Comment deleted",
-          comment,
-        });
-      }
+      res.json({
+        message: "Comment deleted",
+        comment,
+      });
     }
+    //}
   }
 }
 
