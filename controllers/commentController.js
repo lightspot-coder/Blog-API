@@ -117,12 +117,6 @@ async function deleteComment(req, res) {
       message: "This blog doesn't exist",
     });
   } else {
-    /*if (blog.userId != user.id) {
-      res.json({
-        message:
-          "You can not delete the comment because you are not the creator of the blog",
-      });
-    } else {*/
     // Check if the comment exist
     const commentExist = await prisma.comment.findFirst({
       where: {

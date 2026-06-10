@@ -77,6 +77,7 @@ async function createBlog(req, res) {
       });
       res.json({
         message: "Blog created",
+        blog,
       });
     }
   } catch (err) {

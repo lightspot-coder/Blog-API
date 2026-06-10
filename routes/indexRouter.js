@@ -97,8 +97,18 @@ indexRouter.delete(
 );
 
 // REST for post
-indexRouter.get("/blogs/:blogId/posts", checkTypeReqParams, postRouter);
-indexRouter.get("/blogs/:blogId/posts/:postId", checkTypeReqParams, postRouter);
+indexRouter.get(
+  "/blogs/:blogId/posts",
+  checkTypeReqParams,
+  verifyOptionalToken,
+  postRouter,
+);
+indexRouter.get(
+  "/blogs/:blogId/posts/:postId",
+  checkTypeReqParams,
+  verifyOptionalToken,
+  postRouter,
+);
 indexRouter.post(
   "/blogs/:blogId/posts/",
   checkTypeReqParams,
@@ -176,6 +186,31 @@ function verifyToken(req, res, next) {
   } else {
     // Forbidden
     res.sendStatus(403);
+  }
+}
+
+function verifyOptionalToken(req, res, next) {
+  // get the creator header value
+  console.log("verify the token");
+  const bearerHeader = req.headers["authorization"];
+  // Check if bearer is undefined
+  if (typeof bearerHeader !== "undefined") {
+    // Split at the space
+    const bearer = bearerHeader.split(" ");
+    // Get token from array
+    const bearerToken = bearer[1];
+    // Verify the token
+    jwt.verify(bearerToken, process.env.SECRET_KEY, (err, authData) => {
+      if (err) {
+        console.log("something goes wrong verifying the token");
+        req.user = null;
+      } else {
+        req.user = authData.user;
+      }
+      next();
+    });
+  } else {
+    req.user = null;
   }
 }
 

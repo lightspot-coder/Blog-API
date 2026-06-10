@@ -8,7 +8,31 @@ async function readPosts(req, res) {
         blogId: +req.params.blogId,
       },
     });
-    res.json(posts);
+    let onlyPublicPost = true;
+    // only the creator of the blog can see all the post(public or not)
+    // the rest of the users just can see the public ones
+    if (req.user) {
+      console.log("user exist");
+      const blogUser = await prisma.blog.findFirst({
+        where: {
+          AND: {
+            userId: +req.user.id,
+            id: +req.params.blogId,
+          },
+        },
+      });
+      if (blogUser) {
+        res.json(posts);
+        return;
+      }
+    }
+    let publicPosts = [];
+    posts.map((post) => {
+      if (post.public) {
+        publicPosts.push(post);
+      }
+    });
+    res.json(publicPosts);
   } catch (err) {
     console.log(err);
   }
@@ -89,7 +113,10 @@ async function updatePost(req, res) {
         public: req.body.public === "false" ? false : true,
       },
     });
-    res.json(post);
+    res.json({
+      message: "post was update",
+      post,
+    });
   } catch (err) {
     console.log(err);
   }
